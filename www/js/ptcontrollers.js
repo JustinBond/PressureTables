@@ -20,7 +20,7 @@ mod.controller('SettingsCtrl', function ($scope, $state, $log, config) {
 });
 
 /*global document*/
-mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config) {
+mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, graphics) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
@@ -58,6 +58,6 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config) {
         mainCanvas.width = screen.width;
 
 
-        //graphics.init(canvas.height, canvas.width, canvas.getContext("2d"));
+        graphics.init(mainCanvas.height, mainCanvas.width, mainCanvas.getContext("2d"));
     }());
 });

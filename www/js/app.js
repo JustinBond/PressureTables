@@ -8,7 +8,7 @@
          window,
          StatusBar
 */
-var app = angular.module('PressureTables', ['ionic', 'ptcontrollers']);
+var app = angular.module('PressureTables', ['ionic', 'ptcontrollers', 'ptservices']);
 
 app.run(function ($ionicPlatform) {
     "use strict";
@@ -36,7 +36,9 @@ app.constant('config', {
     defaultLevel: 1,
     defaultTime: 10,
     levelFactor: 0.9,
-    headerHeight: 44
+    headerHeight: 44,
+    barWidth: 40,
+    defaultFontSize: 40
 });
 
 app.config(function (config, $logProvider) {

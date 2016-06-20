@@ -10,7 +10,6 @@
     justify-content: center;
     font-size: 1.8em;
 }
-
 #answers {
     display: flex;
     flex-direction: row;

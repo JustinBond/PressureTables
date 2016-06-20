@@ -14,11 +14,6 @@ Timed practice of multiplication tables with increasing pressure
 8. Difficulty increases one level
 9. Can't go below 0.
 
-#### Config
-
-1. tables
-2. difficulty
-
 #### State
 
 1. tables
@@ -29,5 +24,5 @@ Timed practice of multiplication tables with increasing pressure
 #### Design decisions
 
 1. **easy and intuitive** vs **hard**. Some multiple choices where the answer
-can be easily guessed because noe of the others are close. To develop number feel over
+can be easily guessed because none of the others are close. To develop number feel over
 rote memorization. But the hard ones are needed to ensure that the tables actually are memorized.
