@@ -1,5 +1,6 @@
 /* Empty. Add your own CSS if you like */
-#tables {
+.tables {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }

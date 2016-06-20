@@ -3,13 +3,10 @@
       <div class="card">
         <div class="item item-divider">
             <div class="instructions">
-                Difficulty Level
+                Difficulty Level: {{settings.level}}
             </div>
         </div>
         <div class="list">
-            <div class="item">
-                Level: {{settings.level}}
-            </div>
           <div class="item range range-positive">
             <i class="icon ion-minus"></i>
             <input type="range" name="volume" min="1" max="10" value="{{settings.level}}" ng-model="settings.level">
@@ -17,18 +14,32 @@
           </div>
         </div>
       </div>
-      <div id="tables" class="card">
-          <div class="col-50">
-              <div class="row">foo2</div>
-              <div class="row">foo3</div>
-              <div class="row">foo4</div>
-              <div class="row">foo5</div>
+      <div class="card">
+          <div class="item item-divider">
+              Select Tables
           </div>
-          <div class="col-50">
-              <div class="row">foo6</div>
-              <div class="row">foo7</div>
-              <div class="row">foo8</div>
-              <div class="row">foo9</div>
+          <div class="tables">
+              <div class="col-40 card">
+                  <ion-list>
+                    <ion-checkbox ng-model="settings.tables.two">2's</ion-checkbox>
+                    <ion-checkbox ng-model="settings.tables.three">3's</ion-checkbox>
+                    <ion-checkbox ng-model="settings.tables.four">4's</ion-checkbox>
+                    <ion-checkbox ng-model="settings.tables.five">5's</ion-checkbox>
+                </ion-list>
+              </div>
+              <div class="col-40 card">
+                  <ion-checkbox ng-model="settings.tables.six">6's</ion-checkbox>
+                  <ion-checkbox ng-model="settings.tables.seven">7's</ion-checkbox>
+                  <ion-checkbox ng-model="settings.tables.eight">8's</ion-checkbox>
+                  <ion-checkbox ng-model="settings.tables.nine">9's</ion-checkbox>
+              </div>
+          </div>
+      </div>
+      <div class="card">
+          <div class="item">
+              <button class="button button-block button-balanced" ng-click="startDrill(settings)">
+                  Start Drill
+              </button>
           </div>
       </div>
   </ion-content>
