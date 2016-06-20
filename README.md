@@ -1,3 +1,33 @@
 # Pressure Tables
 
 Timed practice of multiplication tables with increasing pressure
+
+#### How to Play
+
+1. Select which table(s) you want to practice, or all.
+2. Select initial difficulty.
+3. Start drilling.
+4. Gain points for each correct answer
+5. Lose points for each wrong answer
+6. Lose points as time passes
+7. Win when you reach 100
+8. Difficulty increases one level
+9. Can't go below 0.
+
+#### Config
+
+1. tables
+2. difficulty
+
+#### State
+
+1. tables
+2. difficulty
+3. score
+4. time since last answer
+
+#### Design decisions
+
+1. **easy and intuitive** vs **hard**. Some multiple choices where the answer
+can be easily guessed because noe of the others are close. To develop number feel over
+rote memorization. But the hard ones are needed to ensure that the tables actually are memorized.
