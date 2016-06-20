@@ -8,7 +8,7 @@
          window,
          StatusBar
 */
-var app = angular.module('PressureTables', ['ionic']);
+var app = angular.module('PressureTables', ['ionic', 'ptcontrollers']);
 
 app.run(function ($ionicPlatform) {
     "use strict";
