@@ -34,7 +34,8 @@ app.constant('config', {
     appName: "Pressure Tables",
     production: false,
     defaultLevel: 1,
-    defaultTime: 10
+    defaultTime: 10,
+    levelFactor: 0.9
 });
 
 app.config(function (config, $logProvider) {

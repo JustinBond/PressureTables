@@ -1,4 +1,35 @@
 <ion-view class="settings-view" view-title="Settings">
   <ion-content scroll="false">
+      <div class="card">
+        <div class="item item-divider">
+            <div class="instructions">
+                Difficulty Level
+            </div>
+        </div>
+        <div class="list">
+            <div class="item">
+                Level: {{settings.level}}
+            </div>
+          <div class="item range range-positive">
+            <i class="icon ion-minus"></i>
+            <input type="range" name="volume" min="1" max="10" value="{{settings.level}}" ng-model="settings.level">
+            <i class="icon ion-plus"></i>
+          </div>
+        </div>
+      </div>
+      <div id="tables" class="card">
+          <div class="col-50">
+              <div class="row">foo2</div>
+              <div class="row">foo3</div>
+              <div class="row">foo4</div>
+              <div class="row">foo5</div>
+          </div>
+          <div class="col-50">
+              <div class="row">foo6</div>
+              <div class="row">foo7</div>
+              <div class="row">foo8</div>
+              <div class="row">foo9</div>
+          </div>
+      </div>
   </ion-content>
 </ion-view>
