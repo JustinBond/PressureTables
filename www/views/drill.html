@@ -1,11 +1,30 @@
-<ion-view class="drill-view" view-title="Drill">
+<ion-view view-title="Drill">
   <ion-content scroll="false">
       <div id="scoreboard" class="item">
           <div class="col-50 heat">Level: {{level}}</div>
           <div class="col-50 score">Score: {{score}}</div>
       </div>
-      <canvas id="myCanvas" style="border:1px solid #d3d3d3;">
+
+      <canvas id="mainCanvas" style="border:1px solid #d3d3d3;" width="180" height="200">
           Your browser does not support the HTML5 canvas tag.
       </canvas>
+      <div id="answers">
+          <div class="col-40">
+              <div class="row">
+                  <button class="button button-block button-calm">47</button>
+              </div>
+              <div class="row">
+                  <button class="button button-block button-calm">47</button>
+              </div>
+          </div>
+          <div class="col-40">
+              <div class="row">
+                  <button class="button button-block button-calm">47</button>
+              </div>
+              <div class="row">
+                  <button class="button button-block button-calm">47</button>
+              </div>
+          </div>
+      </div>
   </ion-content>
 </ion-view>

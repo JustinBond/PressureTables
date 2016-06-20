@@ -41,16 +41,22 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config) {
 
     (function () {
         $log.debug("DrillCtrl: Begin init");
-        var controlsHeight,
-            canvas,
+        var scoreboardHeight,
+            answersHeight,
+            mainCanvas,
             screen;
 
-        canvas = document.getElementById("myCanvas");
-        controlsHeight = document.getElementById("scoreboard").offsetHeight + config.headerHeight;
+        mainCanvas = document.getElementById("mainCanvas");
+
+        scoreboardHeight = document.getElementById("scoreboard").offsetHeight;
+        answersHeight = document.getElementById("answers").offsetHeight;
         screen = getScreenDimensions();
 
-        canvas.height = screen.height - controlsHeight;
-        canvas.width = screen.width;
+        $log.debug("Heights: Screen " + screen.height + " - header " + config.headerHeight + " - scoreboard " + scoreboardHeight + " answers " + answersHeight);
+
+        mainCanvas.height = screen.height - config.headerHeight - scoreboardHeight - answersHeight;
+        mainCanvas.width = screen.width;
+
 
         //graphics.init(canvas.height, canvas.width, canvas.getContext("2d"));
     }());
