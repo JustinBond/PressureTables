@@ -19,7 +19,19 @@ mod.controller('SettingsCtrl', function ($scope, $state, $log, config) {
     };
 });
 
-mod.controller('DrillCtrl', function ($scope, $log) {
+mod.controller('DrillCtrl', function ($scope, $state, $log, $window) {
     "use strict";
     $log.info("Begin SettingsCtrl");
+
+    var settings,
+        getScreenDimensions;
+
+    settings = $state.params.settings;
+
+    getScreenDimensions = function () {
+        return {
+            height : $window.innerHeight,
+            width : $window.innerWidth
+        };
+    };
 });
