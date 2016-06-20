@@ -4,7 +4,7 @@
     flex-direction: row;
     justify-content: center;
 }
-.scoreboard {
+#scoreboard {
     display: flex;
     flex-direction: row;
     justify-content: center;

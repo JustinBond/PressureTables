@@ -1,8 +1,11 @@
 <ion-view class="drill-view" view-title="Drill">
   <ion-content scroll="false">
-      <div class="item scoreboard">
-          <div class="col-50 heat">Level: 10</div>
-          <div class="col-50 score">Score: 1000</div>
+      <div id="scoreboard" class="item">
+          <div class="col-50 heat">Level: {{level}}</div>
+          <div class="col-50 score">Score: {{score}}</div>
       </div>
+      <canvas id="myCanvas" style="border:1px solid #d3d3d3;">
+          Your browser does not support the HTML5 canvas tag.
+      </canvas>
   </ion-content>
 </ion-view>

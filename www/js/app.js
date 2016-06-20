@@ -35,7 +35,8 @@ app.constant('config', {
     production: false,
     defaultLevel: 1,
     defaultTime: 10,
-    levelFactor: 0.9
+    levelFactor: 0.9,
+    headerHeight: 44
 });
 
 app.config(function (config, $logProvider) {
