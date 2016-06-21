@@ -38,7 +38,8 @@ app.constant('config', {
     levelFactor: 0.9,
     headerHeight: 44,
     barWidth: 40,
-    defaultFontSize: 40
+    defaultFontSize: 40,
+    frameLength: 10
 });
 
 app.config(function (config, $logProvider) {

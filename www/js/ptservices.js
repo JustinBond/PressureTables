@@ -6,7 +6,7 @@ mod.service('drillLogic', function ($log) {
     $log.info("Begin drillLogic");
 });
 
-mod.service('graphics', function ($log, config) {
+mod.service('graphics', function ($log, $interval, config) {
     "use strict";
     $log.info("Begin graphics");
 
@@ -63,6 +63,7 @@ mod.service('graphics', function ($log, config) {
         context : null,
         font: config.defaultFontSize + "px Arial",
         fillStyle : "#0000FF",
+        promise : null,
 
         text : "foo",
 
@@ -79,13 +80,67 @@ mod.service('graphics', function ($log, config) {
                 startY;
 
             startX = (this.width - config.barWidth) / 2 - 0.15 * config.defaultFontSize * message.toString().length;
-
             startY = config.defaultFontSize + (percent / 100) * (this.height - config.defaultFontSize);
-            $log.debug("Writing " + message + " at: " + startX, startY);
-            $log.debug("font is: " + this.font);
+            //$log.debug("Writing " + message + " at: " + startX, startY);
+            //$log.debug("font is: " + this.font);
             this.context.font = this.font;
             this.context.fillStyle = this.fillStyle;
             canvas.context.fillText(message, startX, startY);
+        },
+
+        clear : function (percent) {
+            var startX,
+                startY,
+                width,
+                height;
+
+            startX = 0;
+            startY = (percent / 100) * (this.height - config.defaultFontSize);
+            width = this.width - config.barWidth;
+            height = config.defaultFontSize + 2;
+
+            this.context.clearRect(startX, startY, width, height);
+        },
+
+        // animates the message as it falls from the top of the canvas to the
+        // bottom
+        fall : function (message, duration, callback) {
+            $log.debug("Begin fall with " + message, duration);
+
+            var percent,
+                time0,
+                oldPercent;
+
+            time0 = new Date().getTime();
+
+            this.clear(0);
+            this.write(message, 0);
+            oldPercent = 0;
+
+            this.promise = $interval(function () {
+                percent = 100 * (new Date().getTime() - time0) / duration;
+                if (percent >= 100) {
+                    percent = 100;
+                    $interval.cancel(question.promise);
+                }
+                question.clear(oldPercent);
+                question.write(message, percent);
+                $log.debug("percent: " + percent);
+
+                oldPercent = percent;
+            }, 10, duration / config.frameLength);
+
+            this.promise.then(function () {
+                $log.debug("Clearing text at 100");
+                question.clear(100);
+                callback();
+            });
+
+            this.promise.catch(function () {
+                $log.debug("Clearing text at 100");
+                question.clear(100);
+                callback();
+            });
         }
 
     };
@@ -96,8 +151,9 @@ mod.service('graphics', function ($log, config) {
         bar.init(context, height, width);
         bar.draw(70);
         question.init(context, height, width);
-        question.write("7 x 8 =", 20);
-
+        question.fall("7 x 8 =", 5000);
+        //question.write("7 x 8 =", 30);
+        //question.clear(30);
         //drawBox();
     };
 
