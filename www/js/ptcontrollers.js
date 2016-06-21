@@ -1,7 +1,7 @@
 /*global angular*/
 var mod = angular.module('ptcontrollers', []);
 
-mod.controller('SettingsCtrl', function ($scope, $state, $log, config) {
+mod.controller('SettingsCtrl', function ($scope, $state, $log, config, tables) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
@@ -15,7 +15,8 @@ mod.controller('SettingsCtrl', function ($scope, $state, $log, config) {
 
     $scope.startDrill = function (settings) {
         $log.debug("Starting drill with settings: ", JSON.stringify(settings));
-        $state.go('drill', {settings: settings});
+        //$state.go('drill', {settings: settings});
+        tables.getQuestion(5);
     };
 });
 

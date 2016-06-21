@@ -1,6 +1,92 @@
 /*global angular*/
 var mod = angular.module('ptservices', []);
 
+mod.service('tables', function ($log) {
+    "use strict";
+    $log.info("Begin tables");
+
+    var shuffleArray,
+        questionMaker;
+
+    /**
+    * Randomize array element order in-place.
+    * Using Durstenfeld shuffle algorithm.
+    */
+    shuffleArray = function (array) {
+        var i,
+            j,
+            temp;
+
+        for (i = array.length - 1; i > 0; i -= 1) {
+            j = Math.floor(Math.random() * (i + 1));
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    };
+
+    questionMaker = {
+
+        getRandomDigit : function () {
+            return Math.floor(Math.random() * 8) + 2;
+        },
+
+        getEasyFakes : function (table, digit) {
+            var answer,
+                fakes,
+                candidate;
+
+            answer = table * digit;
+            fakes = [];
+
+            while (true) {
+                candidate = Math.floor(Math.random() * 99) + 1;
+                if (candidate / answer > 1.3 || candidate / answer < 0.7) {
+                    fakes.push(candidate);
+                    if (fakes.length === 3) {
+                        return fakes;
+                    }
+                }
+            }
+        },
+
+        // TODO: getHardFakes
+        getHardFakes : function (table, digit) {
+            return this.getEasyFakes(table, digit);
+        },
+
+        getFakeAnswers : function (table, digit, easy) {
+            if (easy) {
+                return this.getEasyFakes(table, digit);
+            }
+            return this.getHardFakes(table, digit);
+        },
+
+        create : function (table) {
+            var question,
+                options;
+
+            $log.debug("Begin questionMaker.create()");
+
+            question = {};
+            question.x = this.getRandomDigit();
+            question.y = table;
+            question.text = question.x + " x " + question.y + " =";
+            question.answer = question.x * question.y;
+            options = this.getFakeAnswers(table, question.x);
+            options.push(question.answer);
+            question.options = shuffleArray(options);
+            $log.debug("Question is: " + JSON.stringify(question));
+            return question;
+        }
+    };
+
+    this.getQuestion = function (table) {
+        return questionMaker.create(table);
+    };
+});
+
 mod.service('drillLogic', function ($log) {
     "use strict";
     $log.info("Begin drillLogic");
@@ -12,7 +98,7 @@ mod.service('graphics', function ($log, $interval, config) {
 
     var canvas,
         bar,
-        question;
+        text;
 
     // this object has the properties needed for working with the HTML5 canvas
     canvas = {
@@ -57,13 +143,12 @@ mod.service('graphics', function ($log, $interval, config) {
         }
     };
 
-    question = {
+    text = {
         height: null,
         width: null,
         context : null,
         font: config.defaultFontSize + "px Arial",
         fillStyle : "#0000FF",
-        promise : null,
 
         text : "foo",
 
@@ -109,7 +194,8 @@ mod.service('graphics', function ($log, $interval, config) {
 
             var percent,
                 time0,
-                oldPercent;
+                oldPercent,
+                promise;
 
             time0 = new Date().getTime();
 
@@ -117,32 +203,33 @@ mod.service('graphics', function ($log, $interval, config) {
             this.write(message, 0);
             oldPercent = 0;
 
-            this.promise = $interval(function () {
+            promise = $interval(function () {
                 percent = 100 * (new Date().getTime() - time0) / duration;
                 if (percent >= 100) {
                     percent = 100;
-                    $interval.cancel(question.promise);
+                    $interval.cancel(promise);
                 }
-                question.clear(oldPercent);
-                question.write(message, percent);
-                $log.debug("percent: " + percent);
+                text.clear(oldPercent);
+                text.write(message, percent);
+                //$log.debug("percent: " + percent);
 
                 oldPercent = percent;
-            }, 10, duration / config.frameLength);
+            }, config.frameLength, duration / config.frameLength);
 
-            this.promise.then(function () {
+            promise.then(function () {
                 $log.debug("Clearing text at 100");
-                question.clear(100);
+                text.clear(100);
                 callback();
             });
 
-            this.promise.catch(function () {
+            promise.catch(function () {
                 $log.debug("Clearing text at 100");
-                question.clear(100);
+                text.clear(100);
                 callback();
             });
+
+            return promise;
         }
-
     };
 
     this.init = function (height, width, context) {
@@ -150,11 +237,8 @@ mod.service('graphics', function ($log, $interval, config) {
         canvas.init(context, height, width);
         bar.init(context, height, width);
         bar.draw(70);
-        question.init(context, height, width);
-        question.fall("7 x 8 =", 5000);
-        //question.write("7 x 8 =", 30);
-        //question.clear(30);
-        //drawBox();
+        text.init(context, height, width);
+        //text.fall("7 x 8 =", 5000);
     };
 
 });
