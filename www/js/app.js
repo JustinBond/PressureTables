@@ -34,7 +34,7 @@ app.constant('config', {
     appName: "Pressure Tables",
     production: false,
     defaultLevel: 1,
-    defaultTime: 10,
+    defaultTime: 10000,
     levelFactor: 0.9,
     headerHeight: 44,
     barWidth: 40,

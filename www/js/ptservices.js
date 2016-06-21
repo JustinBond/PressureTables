@@ -87,9 +87,47 @@ mod.service('tables', function ($log) {
     };
 });
 
-mod.service('drillLogic', function ($log) {
+mod.service('drillLogic', function ($log, config, tables) {
     "use strict";
     $log.info("Begin drillLogic");
+
+    var drill;
+
+    drill = {
+        tables : null,
+        answerTime : config.defaultTime,
+        score: 0,
+
+        setAnswerTime : function (level) {
+
+            var base,
+                exp;
+
+            base = config.levelFactor;
+            exp = level;
+            this.answerTime = config.defaultTime * (Math.pow(base, exp)).toFixed(2);
+            $log.debug("answerTime is: " + this.answerTime);
+        },
+
+        getRandomTable : function () {
+            return this.tables[Math.floor(Math.random() * this.tables.length)];
+        },
+
+        init : function (level, tables) {
+            this.tables = tables;
+            this.setAnswerTime(level);
+        },
+
+        run : function (level, tables) {
+            this.init(level, tables);
+            $log.debug("random table: " + this.getRandomTable());
+
+        }
+    };
+
+    this.run = function (level, tables) {
+        drill.run(level, tables);
+    };
 });
 
 mod.service('graphics', function ($log, $interval, config) {

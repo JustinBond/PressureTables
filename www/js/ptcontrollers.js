@@ -1,7 +1,7 @@
 /*global angular*/
 var mod = angular.module('ptcontrollers', []);
 
-mod.controller('SettingsCtrl', function ($scope, $state, $log, config, tables) {
+mod.controller('SettingsCtrl', function ($scope, $state, $log, $ionicPopup, config) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
@@ -14,24 +14,70 @@ mod.controller('SettingsCtrl', function ($scope, $state, $log, config, tables) {
     });
 
     $scope.startDrill = function (settings) {
-        $log.debug("Starting drill with settings: ", JSON.stringify(settings));
-        //$state.go('drill', {settings: settings});
-        tables.getQuestion(5);
+        $log.debug("Starting drill with settings: " + JSON.stringify(settings));
+        if (settings.tables === null) {
+            $ionicPopup.alert({
+                title: 'No tables selected!',
+                subTitle: 'Please select at least one times table to continue.'
+            });
+            return false;
+        }
+        $state.go('drill', {settings: settings});
     };
 });
 
 /*global document*/
-mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, graphics) {
+mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, graphics, drillLogic) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
     var settings,
-        getScreenDimensions;
+        getScreenDimensions,
+        processTables;
 
     settings = $state.params.settings;
 
     $scope.level = settings.level;
     $scope.score = 0;
+
+    processTables = function () {
+        var table,
+            tables;
+
+        tables = [];
+        for (table in settings.tables) {
+            if (settings.tables.hasOwnProperty(table)) {
+                switch (table) {
+                case "two":
+                    tables.push(2);
+                    break;
+                case "three":
+                    tables.push(3);
+                    break;
+                case "four":
+                    tables.push(4);
+                    break;
+                case "five":
+                    tables.push(5);
+                    break;
+                case "six":
+                    tables.push(6);
+                    break;
+                case "seven":
+                    tables.push(7);
+                    break;
+                case "eight":
+                    tables.push(8);
+                    break;
+                case "nine":
+                    tables.push(9);
+                    break;
+                }
+            }
+        }
+        $log.debug("Tables:" + JSON.stringify(tables));
+        return tables;
+    };
 
     getScreenDimensions = function () {
         return {
@@ -45,8 +91,10 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
         var scoreboardHeight,
             answersHeight,
             mainCanvas,
-            screen;
+            screen,
+            tables;
 
+        // init graphics
         mainCanvas = document.getElementById("mainCanvas");
 
         scoreboardHeight = document.getElementById("scoreboard").offsetHeight;
@@ -60,5 +108,14 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
 
 
         graphics.init(mainCanvas.height, mainCanvas.width, mainCanvas.getContext("2d"));
+
+        // init logic
+        tables = processTables();
+        drillLogic.run(settings.level, tables);
+
     }());
+
+    $scope.answer = function (choice) {
+        $log.debug("Selected option: " + choice);
+    };
 });
