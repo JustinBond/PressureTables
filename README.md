@@ -26,3 +26,12 @@ Timed practice of multiplication tables with increasing pressure
 1. **easy and intuitive** vs **hard**. Some multiple choices where the answer
 can be easily guessed because none of the others are close. To develop number feel over
 rote memorization. But the hard ones are needed to ensure that the tables actually are memorized.
+
+#### TODO
+
+1. Bug: running out of time doesn't cost you points
+2. Red X or green checkmark feedback for answer
+3. Increment level when you reach 100
+4. make a "medium" style answer where the answers are in the overall range,
+but not near the right answer. So for 2's table, answers would be 2 - 24, but
+not within 4 or so points of the right answer.

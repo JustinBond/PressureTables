@@ -27,7 +27,7 @@ mod.controller('SettingsCtrl', function ($scope, $state, $log, $ionicPopup, conf
 });
 
 /*global document*/
-mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, graphics, drillLogic) {
+mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window, config, graphics, drillLogic) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
@@ -51,6 +51,11 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
     $scope.$on("$destroy", function () {
         $log.info("Ending drill");
         graphics.cancel();
+    });
+
+    $rootScope.$on("times-up", function () {
+        $log.debug("times-up handles");
+        drillLogic.answer(false);
     });
 
     processTables = function () {
@@ -101,6 +106,7 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
 
     run = function () {
         $log.debug("Begin run()");
+        drillLogic.drawScore();
         question = drillLogic.question(run);
         $scope.answers.a = question.options[0];
         $scope.answers.b = question.options[1];
@@ -135,16 +141,15 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
         tables = processTables();
         drillLogic.init(settings.level, tables);
         run();
-
     }());
 
     $scope.answer = function (choice) {
         $log.info("Begin $scope.answer() with option " + choice);
         if (question.options[choice] === question.answer) {
+            $log.debug("Correct answer!");
             drillLogic.answer(true);
         } else {
             drillLogic.answer(false);
         }
-        //run();
     };
 });

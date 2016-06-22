@@ -34,13 +34,13 @@ app.constant('config', {
     appName: "Pressure Tables",
     production: false,
     defaultLevel: 1,
-    defaultTime: 20000,
+    defaultTime: 5000,
     levelFactor: 0.9,
     headerHeight: 44,
     barWidth: 40,
     defaultFontSize: 40,
     frameLength: 10,
-    correctAnswer: 5
+    answerPoints: 5
 });
 
 app.config(function (config, $logProvider) {

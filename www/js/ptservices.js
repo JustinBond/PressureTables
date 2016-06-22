@@ -124,7 +124,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
             var table,
                 question;
 
-            graphics.drawScore(this.score);
+            //graphics.drawScore(this.score);
             table = this.getRandomTable();
             question = questionMaker.getQuestion(table);
             graphics.drawQuestion(question.text, this.answerTime, callback);
@@ -133,15 +133,17 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
     };
 
     this.answer = function (correct) {
+        $log.debug("Begin drillLogic.answer() with drill.score " + drill.score);
         if (correct) {
-            this.score += config.answerPoints;
+            drill.score += config.answerPoints;
         } else {
-            this.score -= config.answerPoints;
-            if (this.score < 0) {
-                this.score = 0;
+            drill.score -= config.answerPoints;
+            if (drill.score < 0) {
+                drill.score = 0;
             }
         }
         graphics.next();
+        $log.debug("End drillLogic.answer() with drill.score " + drill.score);
     };
 
     this.init = function (level, tables) {
@@ -152,9 +154,14 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
     this.question = function (callback) {
         return drill.question(callback);
     };
+
+    this.drawScore = function () {
+        $log.debug("Begin drillLogic.drawScore() with drill.score: " + drill.score);
+        graphics.drawScore(drill.score);
+    };
 });
 
-mod.service('graphics', function ($log, $interval, config) {
+mod.service('graphics', function ($log, $interval, $rootScope, config) {
     "use strict";
     $log.info("Begin graphics");
 
@@ -269,7 +276,9 @@ mod.service('graphics', function ($log, $interval, config) {
             this.promise = $interval(function () {
                 percent = 100 * (new Date().getTime() - time0) / duration;
                 if (percent >= 100) {
+                    $log.debug("times-up emitted");
                     percent = 100;
+                    $rootScope.$emit("times-up");
                     $interval.cancel(text.promise);
                 }
                 text.clear(oldPercent);
