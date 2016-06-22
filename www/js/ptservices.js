@@ -29,6 +29,7 @@ mod.service('questionMaker', function ($log) {
     questionMaker = {
 
         queue : [],
+        currentDigit : null,
 
         initQueue : function () {
             var i,
@@ -45,10 +46,14 @@ mod.service('questionMaker', function ($log) {
         },
 
         getRandomDigit : function () {
+            var digit;
+
             if (this.queue.length === 0) {
                 this.initQueue();
             }
-            return this.queue.pop();
+            digit = this.queue.pop();
+            this.currentDigit = digit;
+            return digit;
         },
 
         getEasyFakes : function (table, digit) {
@@ -134,6 +139,10 @@ mod.service('questionMaker', function ($log) {
     this.getQuestion = function (table) {
         return questionMaker.create(table);
     };
+
+    this.redoQuestion = function () {
+        questionMaker.queue.push(questionMaker.currentDigit);
+    };
 });
 
 mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notification) {
@@ -149,6 +158,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
         level : 1,
         running : false,
         totalScore : 0,
+        currentTable : null,
 
         setAnswerTime : function (level) {
 
@@ -179,7 +189,13 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
                 question;
 
             //graphics.drawScore(this.score);
-            table = this.getRandomTable();
+            if (this.currentTable === null) {
+                table = this.getRandomTable();
+                this.currentTable = table;
+            }
+            else {
+                table = this.currentTable;
+            }
             question = questionMaker.getQuestion(table);
             graphics.drawQuestion(question.text, this.answerTime, callback);
             return question;
@@ -190,7 +206,10 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
         $log.debug("Begin drillLogic.answer() with drill.score " + drill.score);
         if (correct) {
             drill.score += config.answerPoints;
+            drill.currentTable = null;
+
         } else {
+            questionMaker.redoQuestion();
             drill.score -= 2 * config.answerPoints;
             if (drill.score < 0) {
                 drill.score = 0;

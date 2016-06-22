@@ -30,4 +30,8 @@ rote memorization. But the hard ones are needed to ensure that the tables actual
 #### TODO
 
 * Bing! or buzzer audible feedback for answer
-* retry wrong answers
+
+#### Refactor
+* object literals
+* how to redo questions
+* how to generate questions - have questionMaker pick both table (from options) and digit
