@@ -52,6 +52,7 @@ mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window,
     timesUpHandler = $rootScope.$on("times-up", function () {
         $log.debug("times-up handles");
         drillLogic.answer(false);
+        $scope.score = drillLogic.getTotalScore();
     });
 
     $scope.$on("$destroy", function () {
@@ -158,5 +159,6 @@ mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window,
         } else {
             drillLogic.answer(false);
         }
+        $scope.score = drillLogic.getTotalScore();
     };
 });

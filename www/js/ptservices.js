@@ -5,26 +5,7 @@ mod.service('questionMaker', function ($log) {
     "use strict";
     $log.info("Begin tables");
 
-    var shuffleArray,
-        questionMaker;
-
-    /**
-    * Randomize array element order in-place.
-    * Using Durstenfeld shuffle algorithm.
-    */
-    shuffleArray = function (array) {
-        var i,
-            j,
-            temp;
-
-        for (i = array.length - 1; i > 0; i -= 1) {
-            j = Math.floor(Math.random() * (i + 1));
-            temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
-        return array;
-    };
+    var questionMaker;
 
     questionMaker = {
 
@@ -43,6 +24,9 @@ mod.service('questionMaker', function ($log) {
             while (true) {
                 candidate = Math.floor(Math.random() * (table * 12)) + 2;
                 if (candidate / answer > 1.3 || candidate / answer < 0.7) {
+                    if (fakes.indexOf(candidate) > -1) {
+                        continue;
+                    }
                     fakes.push(candidate);
                     if (fakes.length === 3) {
                         return fakes;
@@ -51,7 +35,6 @@ mod.service('questionMaker', function ($log) {
             }
         },
 
-        // TODO: getHardFakes
         getHardFakes : function (table, digit) {
             var answer,
                 fakes,
@@ -81,7 +64,7 @@ mod.service('questionMaker', function ($log) {
 
             easy = Math.random() > 0.5;
             if (easy) {
-                $log.debug("Easy!")
+                $log.debug("Easy!");
                 return this.getEasyFakes(table, digit);
             }
             return this.getHardFakes(table, digit);
@@ -127,6 +110,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
         score : 0,
         level : 1,
         running : false,
+        totalScore : 0,
 
         setAnswerTime : function (level) {
 
@@ -167,7 +151,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
         if (correct) {
             drill.score += config.answerPoints;
         } else {
-            drill.score -= config.answerPoints;
+            drill.score -= 2 * config.answerPoints;
             if (drill.score < 0) {
                 drill.score = 0;
             }
@@ -194,6 +178,10 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
     this.drawScore = function () {
         $log.debug("Begin drillLogic.drawScore() with drill.score: " + drill.score);
         graphics.drawScore(drill.score);
+    };
+
+    this.getTotalScore = function () {
+        return (drill.level - 1) * 100 + drill.score;
     };
 });
 
