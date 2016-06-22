@@ -33,12 +33,25 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
 
     var settings,
         getScreenDimensions,
-        processTables;
+        processTables,
+        run,
+        question;
 
     settings = $state.params.settings;
 
     $scope.level = settings.level;
     $scope.score = 0;
+    $scope.answers = {
+        a : "A",
+        b : "B",
+        c : "C",
+        d : "D"
+    };
+
+    $scope.$on("$destroy", function () {
+        $log.info("Ending drill");
+        graphics.cancel();
+    });
 
     processTables = function () {
         var table,
@@ -86,6 +99,15 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
         };
     };
 
+    run = function () {
+        $log.debug("Begin run()");
+        question = drillLogic.question(run);
+        $scope.answers.a = question.options[0];
+        $scope.answers.b = question.options[1];
+        $scope.answers.c = question.options[2];
+        $scope.answers.d = question.options[3];
+    };
+
     (function () {
         $log.debug("DrillCtrl: Begin init");
         var scoreboardHeight,
@@ -111,11 +133,18 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
 
         // init logic
         tables = processTables();
-        drillLogic.run(settings.level, tables);
+        drillLogic.init(settings.level, tables);
+        run();
 
     }());
 
     $scope.answer = function (choice) {
-        $log.debug("Selected option: " + choice);
+        $log.debug("Begin $scope.answer() with option " + choice);
+        if (question.options[choice] === question.answer) {
+            drillLogic.answer(true);
+        } else {
+            drillLogic.answer(false);
+        }
+        run();
     };
 });

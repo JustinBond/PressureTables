@@ -39,7 +39,8 @@ app.constant('config', {
     headerHeight: 44,
     barWidth: 40,
     defaultFontSize: 40,
-    frameLength: 10
+    frameLength: 10,
+    correctAnswer: 5
 });
 
 app.config(function (config, $logProvider) {

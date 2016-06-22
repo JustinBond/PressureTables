@@ -91,8 +91,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
     "use strict";
     $log.info("Begin drillLogic");
 
-    var drill,
-        callback;
+    var drill;
 
     drill = {
         tables : null,
@@ -120,7 +119,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
             this.setAnswerTime(level);
         },
 
-        run : function () {
+        question : function (callback) {
             $log.debug("Begin drill.run()");
             var table,
                 question;
@@ -129,22 +128,29 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
             table = this.getRandomTable();
             question = questionMaker.getQuestion(table);
             graphics.drawQuestion(question.text, this.answerTime, callback);
-
+            return question;
         }
     };
 
-    this.answer = function (answer) {
-        $log.debug("Answered: " + answer);
+    this.answer = function (correct) {
+        if (correct) {
+            this.score += config.answerPoints;
+        } else {
+            this.score -= config.answerPoints;
+            if (this.score < 0) {
+                this.score = 0;
+            }
+        }
+        graphics.next();
     };
 
-    this.run = function (level, tables) {
+    this.init = function (level, tables) {
         drill.init(level, tables);
-        drill.run();
         // update score, getQuestion,
     };
 
-    callback = function () {
-        drill.run();
+    this.question = function (callback) {
+        return drill.question(callback);
     };
 });
 
@@ -206,8 +212,9 @@ mod.service('graphics', function ($log, $interval, config) {
         context : null,
         font: config.defaultFontSize + "px Arial",
         fillStyle : "#0000FF",
-
+        promise : null,
         text : "foo",
+        cancel : false,
 
         init : function (context, height, width) {
             this.context = context;
@@ -251,8 +258,7 @@ mod.service('graphics', function ($log, $interval, config) {
 
             var percent,
                 time0,
-                oldPercent,
-                promise;
+                oldPercent;
 
             time0 = new Date().getTime();
 
@@ -260,11 +266,11 @@ mod.service('graphics', function ($log, $interval, config) {
             this.write(message, 0);
             oldPercent = 0;
 
-            promise = $interval(function () {
+            this.promise = $interval(function () {
                 percent = 100 * (new Date().getTime() - time0) / duration;
                 if (percent >= 100) {
                     percent = 100;
-                    $interval.cancel(promise);
+                    $interval.cancel(text.promise);
                 }
                 text.clear(oldPercent);
                 text.write(message, percent);
@@ -273,19 +279,19 @@ mod.service('graphics', function ($log, $interval, config) {
                 oldPercent = percent;
             }, config.frameLength, duration / config.frameLength);
 
-            promise.then(function () {
-                $log.debug("Clearing text at 100");
-                text.clear(100);
+            this.promise.then(function () {
+                $log.debug("text.fall - promise.then");
+                text.clear(percent);
                 callback();
             });
 
-            promise.catch(function () {
-                $log.debug("Clearing text at 100");
-                text.clear(100);
-                callback();
+            this.promise.catch(function () {
+                $log.debug("text.fall - promise.catch");
+                text.clear(percent);
+                if (!text.cancel) {
+                    callback();
+                }
             });
-
-            return promise;
         }
     };
 
@@ -293,9 +299,7 @@ mod.service('graphics', function ($log, $interval, config) {
         $log.debug("graphics.init: canvas dimensions:", height, width);
         canvas.init(context, height, width);
         bar.init(context, height, width);
-        bar.draw(70);
         text.init(context, height, width);
-        //text.fall("7 x 8 =", 5000);
     };
 
     this.drawScore = function (percent) {
@@ -306,4 +310,13 @@ mod.service('graphics', function ($log, $interval, config) {
         text.fall(question, duration, callback);
     };
 
+    this.next = function () {
+        $interval.cancel(text.promise);
+    };
+
+    this.cancel = function () {
+        $log.debug("Begin graphics.cancel()");
+        text.cancel = true;
+        $interval.cancel(text.promise);
+    };
 });
