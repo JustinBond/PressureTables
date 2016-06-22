@@ -1,7 +1,7 @@
 /*global angular*/
 var mod = angular.module('ptservices', []);
 
-mod.service('tables', function ($log) {
+mod.service('questionMaker', function ($log) {
     "use strict";
     $log.info("Begin tables");
 
@@ -87,16 +87,18 @@ mod.service('tables', function ($log) {
     };
 });
 
-mod.service('drillLogic', function ($log, config, tables) {
+mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
     "use strict";
     $log.info("Begin drillLogic");
 
-    var drill;
+    var drill,
+        callback;
 
     drill = {
         tables : null,
         answerTime : config.defaultTime,
-        score: 0,
+        score : 0,
+        running : false,
 
         setAnswerTime : function (level) {
 
@@ -118,15 +120,31 @@ mod.service('drillLogic', function ($log, config, tables) {
             this.setAnswerTime(level);
         },
 
-        run : function (level, tables) {
-            this.init(level, tables);
-            $log.debug("random table: " + this.getRandomTable());
+        run : function () {
+            $log.debug("Begin drill.run()");
+            var table,
+                question;
+
+            graphics.drawScore(this.score);
+            table = this.getRandomTable();
+            question = questionMaker.getQuestion(table);
+            graphics.drawQuestion(question.text, this.answerTime, callback);
 
         }
     };
 
+    this.answer = function (answer) {
+        $log.debug("Answered: " + answer);
+    };
+
     this.run = function (level, tables) {
-        drill.run(level, tables);
+        drill.init(level, tables);
+        drill.run();
+        // update score, getQuestion,
+    };
+
+    callback = function () {
+        drill.run();
     };
 });
 
@@ -277,6 +295,14 @@ mod.service('graphics', function ($log, $interval, config) {
         bar.draw(70);
         text.init(context, height, width);
         //text.fall("7 x 8 =", 5000);
+    };
+
+    this.drawScore = function (percent) {
+        bar.draw(percent);
+    };
+
+    this.drawQuestion = function (question, duration, callback) {
+        text.fall(question, duration, callback);
     };
 
 });
