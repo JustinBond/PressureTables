@@ -203,7 +203,7 @@ mod.service('drillLogic', function ($log, $timeout, config, questionMaker, graph
 
     this.answer = function (correct) {
         $log.debug("Begin drillLogic.answer() with drill.score " + drill.score);
-        graphics.clearX();
+        graphics.clear();
         if (correct) {
             drill.score += config.answerPoints;
             drill.currentTable = null;
@@ -247,7 +247,7 @@ mod.service('drillLogic', function ($log, $timeout, config, questionMaker, graph
     };
 });
 
-mod.service('graphics', function ($log, $interval, $rootScope, $timeout, config) {
+mod.service('graphics', function ($log, $interval, $rootScope, config) {
     "use strict";
     $log.info("Begin graphics");
 
@@ -295,6 +295,24 @@ mod.service('graphics', function ($log, $interval, $rootScope, $timeout, config)
 
             this.context.clearRect(0, 0, width, height);
 
+        },
+
+        clearX : function () {
+            var startX,
+                startY,
+                width,
+                height,
+                percent,
+                fontSize;
+
+            percent = 30;
+            fontSize = 200;
+            startX = 0;
+            startY = (percent / 100) * (this.height - fontSize - 5);
+            width = this.width - config.barWidth;
+            height = fontSize + 10;
+
+            this.context.clearRect(startX, startY, width, height);
         }
     };
 
@@ -406,19 +424,11 @@ mod.service('graphics', function ($log, $interval, $rootScope, $timeout, config)
 
             this.promise.then(function () {
                 $log.debug("text.fall - promise.then");
-                $timeout(function () {
-                    text.clear(percent);
-                    canvas.clear();
-                }, 150);
                 callback();
             });
 
             this.promise.catch(function () {
                 $log.debug("text.fall - promise.catch");
-                $timeout(function () {
-                    text.clear(percent);
-                    canvas.clear();
-                }, 150);
                 if (!text.cancel) {
                     callback();
                 }
@@ -455,8 +465,11 @@ mod.service('graphics', function ($log, $interval, $rootScope, $timeout, config)
         canvas.write("X");
     };
 
-    this.clearX = function () {
+    this.clear = function () {
         canvas.clear();
+    };
+    this.clearX = function () {
+        canvas.clearX();
     };
 });
 

@@ -14,4 +14,3 @@ the difficulty level increases and the next multiplication problem drops faster.
 * more elegant redo method
 * move "times-up" event into notification service
 * unified method for writing text of various sizes to different points on screen
-* timing of clearing the X for wrong answers and the clearing of the question
