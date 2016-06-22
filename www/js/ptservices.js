@@ -41,7 +41,7 @@ mod.service('questionMaker', function ($log) {
             fakes = [];
 
             while (true) {
-                candidate = Math.floor(Math.random() * 99) + 1;
+                candidate = Math.floor(Math.random() * (table * 12)) + 2;
                 if (candidate / answer > 1.3 || candidate / answer < 0.7) {
                     fakes.push(candidate);
                     if (fakes.length === 3) {
@@ -53,11 +53,35 @@ mod.service('questionMaker', function ($log) {
 
         // TODO: getHardFakes
         getHardFakes : function (table, digit) {
-            return this.getEasyFakes(table, digit);
+            var answer,
+                fakes,
+                candidate,
+                i;
+
+            answer = table * digit;
+            fakes = [];
+
+
+            candidate = Math.floor(Math.random() * 8 + answer - 4);
+            for (i = candidate; i < candidate + 5; i += 1) {
+                if (i === answer) {
+                    continue;
+                }
+                fakes.push(i);
+                if (fakes.length === 3) {
+                    return fakes;
+                }
+            }
+            $log.debug("Reached the end without enough fake answers");
+            return fakes;
         },
 
-        getFakeAnswers : function (table, digit, easy) {
+        getFakeAnswers : function (table, digit) {
+            var easy;
+
+            easy = Math.random() > 0.5;
             if (easy) {
+                $log.debug("Easy!")
                 return this.getEasyFakes(table, digit);
             }
             return this.getHardFakes(table, digit);
@@ -76,7 +100,11 @@ mod.service('questionMaker', function ($log) {
             question.answer = question.x * question.y;
             options = this.getFakeAnswers(table, question.x);
             options.push(question.answer);
-            question.options = shuffleArray(options);
+            //question.options = shuffleArray(options);
+            options.sort(function (a, b) {
+                return a - b;
+            });
+            question.options = options;
             $log.debug("Question is: " + JSON.stringify(question));
             return question;
         }

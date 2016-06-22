@@ -40,7 +40,7 @@ app.constant('config', {
     barWidth: 40,
     defaultFontSize: 40,
     frameLength: 10,
-    answerPoints: 50
+    answerPoints: 10
 });
 
 app.config(function (config, $logProvider) {

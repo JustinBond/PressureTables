@@ -30,8 +30,7 @@ rote memorization. But the hard ones are needed to ensure that the tables actual
 #### TODO
 
 * Bing! or buzzer audible feedback for answer
-* make a "medium" style answer where the answers are in the overall range,
-but not near the right answer. So for 2's table, answers would be 2 - 24, but
-not within 4 or so points of the right answer.
 * don't pick tables at random - instead create an array with each element in the table
 (2 - 9) and doubles for 6-9 and shuffle that array.
+* make sure no duplicate fake answers
+* show score
