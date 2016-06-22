@@ -139,12 +139,12 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
     }());
 
     $scope.answer = function (choice) {
-        $log.debug("Begin $scope.answer() with option " + choice);
+        $log.info("Begin $scope.answer() with option " + choice);
         if (question.options[choice] === question.answer) {
             drillLogic.answer(true);
         } else {
             drillLogic.answer(false);
         }
-        run();
+        //run();
     };
 });
