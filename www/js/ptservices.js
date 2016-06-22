@@ -179,13 +179,14 @@ mod.service('graphics', function ($log, $interval, config) {
         // is a slightly tricky because (0, 0) is the upper left corner of the
         // canvas, so we have to draw it "down" from the top.
         draw : function (percent) {
+            $log.debug("Begin bar.draw() with " + percent);
             var startY,
                 barHeight;
 
             startY = this.height - percent * this.height / 100;
             barHeight = this.height - startY;
             canvas.context.fillStyle = "#008000";
-            canvas.context.clearRect(this.width, 0, this.width, this.height);
+            canvas.context.clearRect(this.startX, 0, this.width, this.height);
             canvas.context.fillRect(this.startX, startY, this.width, barHeight);
 
             //canvas.context.fillRect(this.loc.x, this.loc.y, this.width, this.height);
