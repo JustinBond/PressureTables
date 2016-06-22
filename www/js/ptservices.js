@@ -87,7 +87,7 @@ mod.service('questionMaker', function ($log) {
     };
 });
 
-mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
+mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notification) {
     "use strict";
     $log.info("Begin drillLogic");
 
@@ -97,6 +97,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
         tables : null,
         answerTime : config.defaultTime,
         score : 0,
+        level : 1,
         running : false,
 
         setAnswerTime : function (level) {
@@ -105,7 +106,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
                 exp;
 
             base = config.levelFactor;
-            exp = level;
+            exp = level - 1;
             this.answerTime = config.defaultTime * (Math.pow(base, exp)).toFixed(2);
             $log.debug("answerTime is: " + this.answerTime);
         },
@@ -116,6 +117,7 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
 
         init : function (level, tables) {
             this.tables = tables;
+            this.level = level;
             this.setAnswerTime(level);
         },
 
@@ -141,6 +143,12 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics) {
             if (drill.score < 0) {
                 drill.score = 0;
             }
+        }
+        if (drill.score >= 100) {
+            drill.score = 0;
+            drill.level += 1;
+            Notification.notify("level-up");
+            drill.setAnswerTime(drill.level);
         }
         graphics.next();
         $log.debug("End drillLogic.answer() with drill.score " + drill.score);
@@ -329,3 +337,19 @@ mod.service('graphics', function ($log, $interval, $rootScope, config) {
         $interval.cancel(text.promise);
     };
 });
+
+mod.service('Notification', ['$rootScope', '$log', function ($rootScope, $log) {
+    "use strict";
+
+    this.subscribe = function (scope, eventName, callback) {
+        $log.debug("subscribing to notification: ", eventName);
+        var handler = $rootScope.$on(eventName, callback);
+        scope.$on('$destroy', handler);
+    };
+
+    this.notify = function (eventName) {
+        $log.debug("emitting notification: ", eventName);
+        $rootScope.$emit(eventName);
+    };
+
+}]);

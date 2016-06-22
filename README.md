@@ -29,9 +29,9 @@ rote memorization. But the hard ones are needed to ensure that the tables actual
 
 #### TODO
 
-1. Bug: running out of time doesn't cost you points
-2. Red X or green checkmark feedback for answer
-3. Increment level when you reach 100
-4. make a "medium" style answer where the answers are in the overall range,
+* Bing! or buzzer audible feedback for answer
+* make a "medium" style answer where the answers are in the overall range,
 but not near the right answer. So for 2's table, answers would be 2 - 24, but
 not within 4 or so points of the right answer.
+* don't pick tables at random - instead create an array with each element in the table
+(2 - 9) and doubles for 6-9 and shuffle that array.
