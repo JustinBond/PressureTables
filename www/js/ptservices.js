@@ -5,12 +5,50 @@ mod.service('questionMaker', function ($log) {
     "use strict";
     $log.info("Begin tables");
 
-    var questionMaker;
+    var questionMaker,
+        shuffle;
+
+    /**
+     * Randomize array element order in-place.
+     * Using Durstenfeld shuffle algorithm.
+     */
+    shuffle = function (array) {
+        var i,
+            j,
+            temp;
+
+        for (i = array.length - 1; i > 0; i -= 1) {
+            j = Math.floor(Math.random() * (i + 1));
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    };
 
     questionMaker = {
 
+        queue : [],
+
+        initQueue : function () {
+            var i,
+                queue;
+
+            queue = [];
+            for (i = 2; i < 13; i += 1) {
+                queue.push(i);
+            }
+            for (i = 6; i < 10; i += 1) {
+                queue.push(i);
+            }
+            this.queue = shuffle(queue);
+        },
+
         getRandomDigit : function () {
-            return Math.floor(Math.random() * 8) + 2;
+            if (this.queue.length === 0) {
+                this.initQueue();
+            }
+            return this.queue.pop();
         },
 
         getEasyFakes : function (table, digit) {
@@ -22,7 +60,7 @@ mod.service('questionMaker', function ($log) {
             fakes = [];
 
             while (true) {
-                candidate = Math.floor(Math.random() * (table * 12)) + 2;
+                candidate = Math.floor(Math.random() * (table * 14)) + 2;
                 if (candidate / answer > 1.3 || candidate / answer < 0.7) {
                     if (fakes.indexOf(candidate) > -1) {
                         continue;
@@ -126,6 +164,8 @@ mod.service('drillLogic', function ($log, config, questionMaker, graphics, Notif
         getRandomTable : function () {
             return this.tables[Math.floor(Math.random() * this.tables.length)];
         },
+
+
 
         init : function (level, tables) {
             this.tables = tables;

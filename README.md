@@ -30,5 +30,4 @@ rote memorization. But the hard ones are needed to ensure that the tables actual
 #### TODO
 
 * Bing! or buzzer audible feedback for answer
-* don't pick tables at random - instead create an array with each element in the table
-(2 - 9) and doubles for 6-9 and shuffle that array.
+* retry wrong answers
