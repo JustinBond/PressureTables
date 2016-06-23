@@ -415,16 +415,15 @@ mod.service('graphics', function ($log, $interval, $rootScope, config) {
 
             this.promise = $interval(function () {
                 percent = 100 * (new Date().getTime() - time0) / duration;
+                text.clear(oldPercent);
+                text.write(message, percent);
+                //$log.debug("percent: " + percent);
                 if (percent >= 100) {
                     $log.debug("times-up emitted");
                     percent = 100;
                     $rootScope.$emit("times-up");
                     $interval.cancel(text.promise);
                 }
-                text.clear(oldPercent);
-                text.write(message, percent);
-                //$log.debug("percent: " + percent);
-
                 oldPercent = percent;
             }, config.frameLength, duration / config.frameLength);
 
