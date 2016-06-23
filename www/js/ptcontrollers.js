@@ -27,7 +27,7 @@ mod.controller('SettingsCtrl', function ($scope, $state, $log, $ionicPopup, conf
 });
 
 /*global document*/
-mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window, config, graphics, drillLogic, Notification) {
+mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, graphics, drillLogic, Notification) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
@@ -35,8 +35,7 @@ mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window,
         getScreenDimensions,
         processTables,
         run,
-        question,
-        timesUpHandler;
+        question;
 
     settings = $state.params.settings;
 
@@ -49,7 +48,7 @@ mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window,
         d : "D"
     };
 
-    timesUpHandler = $rootScope.$on("times-up", function () {
+    Notification.subscribe($scope, "times-up", function () {
         $log.debug("times-up handles");
         drillLogic.answer(false);
         $scope.score = drillLogic.getTotalScore();
@@ -59,8 +58,6 @@ mod.controller('DrillCtrl', function ($scope, $rootScope, $state, $log, $window,
         $log.info("Ending drill");
         graphics.cancel();
     });
-
-    $scope.$on("$destroy", timesUpHandler);
 
     Notification.subscribe($scope, "level-up", function () {
         $scope.level += 1;

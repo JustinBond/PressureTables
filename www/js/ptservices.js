@@ -251,7 +251,7 @@ mod.service('drillLogic', function ($log, $timeout, config, questionMaker, graph
     };
 });
 
-mod.service('graphics', function ($log, $interval, $rootScope, config) {
+mod.service('graphics', function ($log, $interval, config, Notification) {
     "use strict";
     $log.info("Begin graphics");
 
@@ -421,7 +421,7 @@ mod.service('graphics', function ($log, $interval, $rootScope, config) {
                 if (percent >= 100) {
                     $log.debug("times-up emitted");
                     percent = 100;
-                    $rootScope.$emit("times-up");
+                    Notification.notify("times-up");
                     $interval.cancel(text.promise);
                 }
                 oldPercent = percent;
