@@ -147,7 +147,7 @@ mod.service('questionMaker', function ($log) {
 
 mod.service('drillLogic', function ($log, $timeout, config, questionMaker, graphics, Notification) {
     "use strict";
-    $log.info("Begin drillLogic");
+    $log.info("Begin drillLogic with drill");
 
     var drill;
 
@@ -180,6 +180,9 @@ mod.service('drillLogic', function ($log, $timeout, config, questionMaker, graph
         init : function (level, tables) {
             this.tables = tables;
             this.level = level;
+            this.currentTable = null;
+            this.score = 0;
+            this.totalScore = 0;
             this.setAnswerTime(level);
         },
 
@@ -230,6 +233,7 @@ mod.service('drillLogic', function ($log, $timeout, config, questionMaker, graph
 
     this.init = function (level, tables) {
         drill.init(level, tables);
+        $log.debug("Drill is " + JSON.stringify(drill));
         // update score, getQuestion,
     };
 
@@ -361,6 +365,8 @@ mod.service('graphics', function ($log, $interval, $rootScope, config) {
             this.context = context;
             this.height = height;
             this.width = width;
+            this.cancel = false;
+            $log.info("Begin with text " + JSON.stringify(text));
         },
 
         // Writes a message in the center of the screen at percent height
