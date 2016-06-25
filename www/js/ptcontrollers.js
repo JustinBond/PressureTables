@@ -139,7 +139,6 @@ mod.controller('DrillCtrl', function ($scope, $state, $log, $window, config, gra
         mainCanvas.height = screen.height - config.headerHeight - scoreboardHeight - answersHeight;
         mainCanvas.width = screen.width;
 
-
         graphics.init(mainCanvas.height, mainCanvas.width, mainCanvas.getContext("2d"));
 
         // init logic

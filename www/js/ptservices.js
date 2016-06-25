@@ -30,6 +30,8 @@ mod.service('questionMaker', function ($log) {
 
         queue : [],
         currentDigit : null,
+        redo : false,
+        question : {},
 
         initQueue : function () {
             var i,
@@ -119,6 +121,11 @@ mod.service('questionMaker', function ($log) {
 
             $log.debug("Begin questionMaker.create()");
 
+            if (this.redo) {
+                this.redo = false;
+                return this.question;
+            }
+
             question = {};
             question.x = this.getRandomDigit();
             question.y = table;
@@ -132,6 +139,7 @@ mod.service('questionMaker', function ($log) {
             });
             question.options = options;
             $log.debug("Question is: " + JSON.stringify(question));
+            this.question = question;
             return question;
         }
     };
@@ -141,7 +149,9 @@ mod.service('questionMaker', function ($log) {
     };
 
     this.redoQuestion = function () {
-        questionMaker.queue.push(questionMaker.currentDigit);
+        $log.debug("Question wrong, setting redo to true");
+        questionMaker.redo = true;
+        //questionMaker.queue.push(questionMaker.currentDigit);
     };
 });
 

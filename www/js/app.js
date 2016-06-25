@@ -32,11 +32,11 @@ app.run(function ($ionicPlatform) {
 
 app.constant('config', {
     appName: "Pressure Tables",
-    production: false,
+    production: true,
     defaultLevel: 1,
     defaultTime: 15000,
-    levelFactor: 0.8,
-    headerHeight: 44,
+    levelFactor: 0.85,
+    headerHeight: 64,
     barWidth: 40,
     defaultFontSize: 40,
     frameLength: 10,
