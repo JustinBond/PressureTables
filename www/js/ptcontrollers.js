@@ -1,13 +1,21 @@
 /*global angular*/
 var mod = angular.module('ptcontrollers', []);
 
-mod.controller('SettingsCtrl', function ($scope, $state, $log, $ionicPopup, config) {
+mod.controller('SettingsCtrl', function ($scope, $state, $log, $ionicPopup, $ionicPlatform, config) {
     "use strict";
     $log.info("Begin SettingsCtrl");
 
     $scope.settings = { "level" : config.defaultLevel,
                         "tables" : null
         };
+    $scope.$on('$ionicView.enter', function () {
+        // Code you want executed every time view is opened
+        //update();
+        $log.debug("Resume SettingsCtrl");
+        $scope.settings = { "level" : config.defaultLevel,
+                            "tables" : null
+            };
+    });
 
     $scope.$watch('settings.tables', function () {
         $log.debug("tables changed: " + JSON.stringify($scope.settings.tables));
